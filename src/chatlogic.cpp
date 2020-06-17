@@ -36,7 +36,7 @@ ChatLogic::ChatLogic(ChatLogic const && source)
     this->_currentNode = source._currentNode;
     this->_panelDialog = source._panelDialog;
     this->_chatBot     = source._chatBot;
-    this->_nodes       = source._nodes;
+    this->_nodes       = std::move(source._nodes);
     this->_edges       = source._edges;
 
     this->_currentNode = nullptr;
@@ -52,7 +52,7 @@ ChatLogic & ChatLogic::operator=(ChatLogic const && source)
     this->_currentNode = source._currentNode;
     this->_panelDialog = source._panelDialog;
     this->_chatBot     = source._chatBot;
-    this->_nodes       = source._nodes;
+    this->_nodes       = std::move(source._nodes);
     this->_edges       = source._edges;
 
     this->_currentNode = nullptr;
@@ -225,6 +225,8 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
         }
     }
 
+
+    ChatBot chatBot(std::move(*_chatBot));
     // add chatbot to graph root node
     _chatBot->SetRootNode(rootNode);
     rootNode->MoveChatbotHere(_chatBot);
