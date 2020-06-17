@@ -1,33 +1,59 @@
-#include <iostream>
-#include <random>
+#include "chatbot.h"
+#include "chatlogic.h"
+#include "graphedge.h"
+#include "graphnode.h"
+
 #include <algorithm>
 #include <ctime>
+#include <iostream>
+#include <random>
 
-#include "chatlogic.h"
-#include "graphnode.h"
-#include "graphedge.h"
-#include "chatbot.h"
+
 
 // constructor WITHOUT memory allocation
 ChatBot::ChatBot()
 {
     // invalidate data handles
-    _image = nullptr;
-    _chatLogic = nullptr;
-    _rootNode = nullptr;
+    this->_image = nullptr;
+    this->_chatLogic = nullptr;
+    this->_rootNode = nullptr;
 }
 
 // constructor WITH memory allocation
-ChatBot::ChatBot(std::string filename)
+ChatBot::ChatBot(const std::string &filename)
 {
     std::cout << "ChatBot Constructor" << std::endl;
-    
-    // invalidate data handles
-    _chatLogic = nullptr;
-    _rootNode = nullptr;
+
+    this->_chatLogic = nullptr;
+    this->_rootNode = nullptr;
 
     // load image into heap memory
-    _image = new wxBitmap(filename, wxBITMAP_TYPE_PNG);
+    this->_image = new wxBitmap(filename, wxBITMAP_TYPE_PNG);
+}
+
+ChatBot::ChatBot(ChatBot const &source)
+{
+    std::cout << "ChatBot Copy Constructor" << std::endl;
+
+    this->_chatLogic = source._chatLogic;
+    this->_rootNode = source._rootNode;
+    this->_currentNode = source._currentNode;
+    this->_image = source._image;
+}
+
+ChatBot::ChatBot(ChatBot &&source) 
+{
+    std::cout << "ChatBot Move Constructor" << std::endl;
+
+    this->_chatLogic = source._chatLogic;
+    this->_rootNode = source._rootNode;
+    this->_currentNode = source._currentNode;
+    this->_image = source._image;
+
+    source._chatLogic = nullptr;
+    source._rootNode = nullptr;
+    source._currentNode = nullptr;
+    source._image = nullptr;
 }
 
 ChatBot::~ChatBot()
@@ -35,13 +61,14 @@ ChatBot::~ChatBot()
     std::cout << "ChatBot Destructor" << std::endl;
 
     // deallocate heap memory
-    if(_image != NULL) // Attention: wxWidgets used NULL and not nullptr
+    if (_image != NULL) // Attention: wxWidgets used NULL and not nullptr
     {
         delete _image;
         _image = NULL;
     }
 }
 
+<<<<<<< HEAD
 
     ChatBot::ChatBot(ChatBot const & source)
     {
@@ -53,35 +80,36 @@ ChatBot::~ChatBot()
         this->_image       = source._image;
         this->_rootNode    = source._rootNode;
     }
+=======
+ChatBot &ChatBot::operator=(ChatBot const &source)
+{
+    std::cout << "ChatBot Copy Assignment Operator" << std::endl;
+>>>>>>> 5833f6ac86b85811d3caf8c35af1931ff7ba58cd
 
-    ChatBot::ChatBot(ChatBot  && source)
+    if (this == &source)
     {
-        std::cout << "ChatBot Move Constructor" << std::endl;
-        this->_chatLogic   = source._chatLogic;
-        this->_currentNode = source._currentNode;
-        this->_image       = source._image;
-        this->_rootNode    = source._rootNode;   
-
-        source._chatLogic     = nullptr;
-        source._currentNode   = nullptr;
-        source._image         = nullptr;
-        source._rootNode      = nullptr;
-    }
-
-    ChatBot& ChatBot::operator=(ChatBot const & source)
-    {
-        if(this == &source)
-            return *this;
-         std::cout << "ChatBot Copy assignement" << std::endl;
-        //to do : implement deep copy
-        //shallow copy
-        this->_chatLogic   = source._chatLogic;
-        this->_currentNode = source._currentNode;
-        this->_image       = source._image;
-        this->_rootNode    = source._rootNode;
         return *this;
     }
 
+    // shallow copy of data handles
+    this->_chatLogic = source._chatLogic;
+    this->_rootNode = source._rootNode;
+    this->_currentNode = source._currentNode;
+    this->_image = source._image;
+
+    return *this;
+}
+
+ChatBot &ChatBot::operator=(ChatBot &&source) 
+{
+    std::cout << "ChatBot Move Assignment Operator" << std::endl;
+
+    if (this == &source)
+    {
+        return *this;
+    }
+
+<<<<<<< HEAD
     ChatBot& ChatBot::operator=(ChatBot  && source)
     {
         std::cout << "ChatBot Move assginment" << std::endl;
@@ -102,8 +130,24 @@ ChatBot::~ChatBot()
         source._rootNode      = nullptr;
     }
 
+=======
+    // transfering data handles
+    this->_chatLogic = source._chatLogic;
+    this->_rootNode = source._rootNode;
+    this->_currentNode = source._currentNode;
+    this->_image = source._image;
 
-void ChatBot::ReceiveMessageFromUser(std::string message)
+    // releasing data handles
+    source._chatLogic = nullptr;
+    source._rootNode = nullptr;
+    source._currentNode = nullptr;
+    source._image = nullptr;
+
+    return *this;
+}
+>>>>>>> 5833f6ac86b85811d3caf8c35af1931ff7ba58cd
+
+void ChatBot::ReceiveMessageFromUser(const std::string &message)
 {
     // loop over all edges and keywords and compute Levenshtein distance to query
     typedef std::pair<GraphEdge *, int> EdgeDist;
@@ -112,7 +156,7 @@ void ChatBot::ReceiveMessageFromUser(std::string message)
     for (size_t i = 0; i < _currentNode->GetNumberOfChildEdges(); ++i)
     {
         GraphEdge *edge = _currentNode->GetChildEdgeAtIndex(i);
-        for (auto keyword : edge->GetKeywords())
+        for (const auto &keyword : edge->GetKeywords())
         {
             EdgeDist ed{edge, ComputeLevenshteinDistance(keyword, message)};
             levDists.push_back(ed);
@@ -121,11 +165,16 @@ void ChatBot::ReceiveMessageFromUser(std::string message)
 
     // select best fitting edge to proceed along
     GraphNode *newNode;
-    if (levDists.size() > 0)
+    if (!levDists.empty())
     {
         // sort in ascending order of Levenshtein distance (best fit is at the top)
-        std::sort(levDists.begin(), levDists.end(), [](const EdgeDist &a, const EdgeDist &b) { return a.second < b.second; });
-        newNode = levDists.at(0).first->GetChildNode(); // after sorting the best edge is at first position
+        std::sort(levDists.begin(), levDists.end(),
+                  [](const EdgeDist &a, const EdgeDist &b) {
+                      return a.second < b.second;
+                  });
+        newNode =
+            levDists.at(0).first->GetChildNode(); // after sorting the best edge is
+                                                  // at first position
     }
     else
     {
@@ -140,7 +189,7 @@ void ChatBot::ReceiveMessageFromUser(std::string message)
 void ChatBot::SetCurrentNode(GraphNode *node)
 {
     // update pointer to current node
-    _currentNode = node;
+    this->_currentNode = node;
 
     // select a random node answer (if several answers should exist)
     std::vector<std::string> answers = _currentNode->GetAnswers();
@@ -149,7 +198,7 @@ void ChatBot::SetCurrentNode(GraphNode *node)
     std::string answer = answers.at(dis(generator));
 
     // send selected node answer to user
-    _chatLogic->SendMessageToUser(answer);
+    this->_chatLogic->SendMessageToUser(answer);
 }
 
 int ChatBot::ComputeLevenshteinDistance(std::string s1, std::string s2)
@@ -167,19 +216,21 @@ int ChatBot::ComputeLevenshteinDistance(std::string s1, std::string s2)
     if (n == 0)
         return m;
 
-    size_t *costs = new size_t[n + 1];
+    auto *costs = new size_t[n + 1];
 
     for (size_t k = 0; k <= n; k++)
         costs[k] = k;
 
     size_t i = 0;
-    for (std::string::const_iterator it1 = s1.begin(); it1 != s1.end(); ++it1, ++i)
+    for (std::string::const_iterator it1 = s1.begin(); it1 != s1.end();
+         ++it1, ++i)
     {
         costs[0] = i + 1;
         size_t corner = i;
 
         size_t j = 0;
-        for (std::string::const_iterator it2 = s2.begin(); it2 != s2.end(); ++it2, ++j)
+        for (std::string::const_iterator it2 = s2.begin(); it2 != s2.end();
+             ++it2, ++j)
         {
             size_t upper = costs[j + 1];
             if (*it1 == *it2)
