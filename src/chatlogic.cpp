@@ -50,6 +50,35 @@ ChatLogic::~ChatLogic()
     ////
     //// EOF STUDENT CODE
 }
+ChatLogic::ChatLogic(ChatLogic const && source)
+{
+    this->_currentNode = source._currentNode;
+    this->_panelDialog = source._panelDialog;
+    this->_chatBot     = source._chatBot;
+    this->_nodes       = source._nodes;
+    this->_edges       = source._edges;
+
+    this->_currentNode = nullptr;
+    this->_panelDialog = nullptr;
+    this->_chatBot     = nullptr;
+}
+
+ChatLogic & ChatLogic::operator=(ChatLogic const && source)
+{
+    if(this == &source)
+        return *this;
+
+    this->_currentNode = source._currentNode;
+    this->_panelDialog = source._panelDialog;
+    this->_chatBot     = source._chatBot;
+    this->_nodes       = source._nodes;
+    this->_edges       = source._edges;
+
+    this->_currentNode = nullptr;
+    this->_panelDialog = nullptr;
+    this->_chatBot     = nullptr;
+    return *this;
+}
 
 template <typename T>
 void ChatLogic::AddAllTokensToElement(std::string tokenID, tokenlist &tokens, T &element)

@@ -38,8 +38,12 @@ private:
 public:
     // constructor / destructor
     ChatLogic();
+    ChatLogic(ChatLogic const & source) = delete;
+    ChatLogic(ChatLogic const &&source);
     ~ChatLogic();
 
+    ChatLogic & operator=(ChatLogic const &source) = delete;
+    ChatLogic & operator=(ChatLogic const &&source);
     // getter / setter
     void SetPanelDialogHandle(ChatBotPanelDialog *panelDialog);
     void SetChatbotHandle(ChatBot *chatbot);
