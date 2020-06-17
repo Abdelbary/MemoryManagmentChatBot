@@ -55,7 +55,7 @@ ChatBot::~ChatBot()
         this->_rootNode    = source._rootNode;
     }
 
-    ChatBot::ChatBot(ChatBot const && source)
+    ChatBot::ChatBot(ChatBot  && source)
     {
         std::cout << "ChatBot Move Constructor" << std::endl;
         this->_chatLogic   = source._chatLogic;
@@ -63,16 +63,16 @@ ChatBot::~ChatBot()
         this->_image       = source._image;
         this->_rootNode    = source._rootNode;   
 
-        source._chatLogic;     = nullptr;
-        source._currentNode;   = nullptr;
-        source._image;         = nullptr;
-        source._rootNode;      = nullptr;
+        source._chatLogic     = nullptr;
+        source._currentNode   = nullptr;
+        source._image         = nullptr;
+        source._rootNode      = nullptr;
     }
 
     ChatBot& ChatBot::operator=(ChatBot const & source)
     {
         if(this == &source)
-            return source;
+            return *this;
          std::cout << "ChatBot Copy assignement" << std::endl;
         //to do : implement deep copy
         //shallow copy
@@ -83,7 +83,7 @@ ChatBot::~ChatBot()
         return *this;
     }
 
-    ChatBot& ChatBot::operator=(ChatBot const && source)
+    ChatBot& ChatBot::operator=(ChatBot  && source)
     {
         std::cout << "ChatBot Move assginment" << std::endl;
 
@@ -97,10 +97,10 @@ ChatBot::~ChatBot()
         this->_image       = source._image;
         this->_rootNode    = source._rootNode;
 
-        source._chatLogic;     = nullptr;
-        source._currentNode;   = nullptr;
-        source._image;         = nullptr;
-        source._rootNode;      = nullptr;
+        source._chatLogic     = nullptr;
+        source._currentNode   = nullptr;
+        source._image         = nullptr;
+        source._rootNode      = nullptr;
     }
 ////
 //// EOF STUDENT CODE
