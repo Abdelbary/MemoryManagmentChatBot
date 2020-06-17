@@ -44,7 +44,64 @@ ChatBot::~ChatBot()
 
 //// STUDENT CODE
 ////
+    ChatBot::ChatBot(ChatBot const & source)
+    {
+        std::cout << "ChatBot Copy Constructor" << std::endl;
+        //to do : implement deep copy
+        //shallow copy
+        this->_chatLogic   = source._chatLogic;
+        this->_currentNode = source._currentNode;
+        this->_image       = source._image;
+        this->_rootNode    = source._rootNode;
+    }
 
+    ChatBot::ChatBot(ChatBot const && source)
+    {
+        std::cout << "ChatBot Move Constructor" << std::endl;
+        this->_chatLogic   = source._chatLogic;
+        this->_currentNode = source._currentNode;
+        this->_image       = source._image;
+        this->_rootNode    = source._rootNode;   
+
+        source._chatLogic;     = nullptr;
+        source._currentNode;   = nullptr;
+        source._image;         = nullptr;
+        source._rootNode;      = nullptr;
+    }
+
+    ChatBot& ChatBot::operator=(ChatBot const & source)
+    {
+        if(this == &source)
+            return source;
+         std::cout << "ChatBot Copy assignement" << std::endl;
+        //to do : implement deep copy
+        //shallow copy
+        this->_chatLogic   = source._chatLogic;
+        this->_currentNode = source._currentNode;
+        this->_image       = source._image;
+        this->_rootNode    = source._rootNode;
+        return *this;
+    }
+
+    ChatBot& ChatBot::operator=(ChatBot const && source)
+    {
+        std::cout << "ChatBot Move assginment" << std::endl;
+
+        if(this == &source)
+            return source;
+         std::cout << "ChatBot Copy assignement" << std::endl;
+        //to do : implement deep copy
+        //shallow copy
+        this->_chatLogic   = source._chatLogic;
+        this->_currentNode = source._currentNode;
+        this->_image       = source._image;
+        this->_rootNode    = source._rootNode;
+
+        source._chatLogic;     = nullptr;
+        source._currentNode;   = nullptr;
+        source._image;         = nullptr;
+        source._rootNode;      = nullptr;
+    }
 ////
 //// EOF STUDENT CODE
 
