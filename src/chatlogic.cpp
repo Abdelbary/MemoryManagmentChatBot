@@ -14,43 +14,11 @@
 
 
 
-ChatLogic::ChatLogic()
-{
-    _chatBot = new ChatBot("../images/chatbot.png");
-    _chatBot->SetChatLogicHandle(this);
-}
+ChatLogic::ChatLogic(){}
 
 ChatLogic::~ChatLogic() {}
 
-ChatLogic::ChatLogic(ChatLogic &&source) 
-{
-    this->_currentNode = source._currentNode;
-    this->_panelDialog = source._panelDialog;
-    this->_chatBot = source._chatBot;
-    this->_nodes = std::move(source._nodes);
 
-    this->_currentNode = nullptr;
-    this->_panelDialog = nullptr;
-    this->_chatBot = nullptr;
-}
-
-ChatLogic& ChatLogic::operator=(ChatLogic &&source) 
-{
-    if (this == &source)
-    {
-        return *this;
-    }
-
-    this->_currentNode = source._currentNode;
-    this->_panelDialog = source._panelDialog;
-    this->_chatBot = source._chatBot;
-    this->_nodes = std::move(source._nodes);
-
-    this->_currentNode = nullptr;
-    this->_panelDialog = nullptr;
-    this->_chatBot = nullptr;
-    return *this;
-}
 
 template <typename T>
 void ChatLogic::AddAllTokensToElement(const std::string &tokenID, tokenlist &tokens,
@@ -235,8 +203,9 @@ void ChatLogic::LoadAnswerGraphFromFile(const std::string &filename)
         }
     }
 
-
-    ChatBot chatBot(std::move(*_chatBot));
+    
+    ChatBot chatBot("../images/chatbot.png");
+    chatBot.SetChatLogicHandle(this);
 
     chatBot.SetRootNode(rootNode);
     rootNode->MoveChatbotHere(std::move(chatBot));

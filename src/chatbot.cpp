@@ -25,7 +25,6 @@ ChatBot::ChatBot(const std::string &filename) {
   // invalidate data handles
   this->_chatLogic = nullptr;
   this->_rootNode = nullptr;
-
   // load image into heap memory
   this->_image = new wxBitmap(filename, wxBITMAP_TYPE_PNG);
 }
@@ -33,11 +32,12 @@ ChatBot::ChatBot(const std::string &filename) {
 ChatBot::ChatBot(ChatBot const& source) {
   std::cout << "ChatBot Copy Constructor" << std::endl;
 
-  // shallow copy of data handles
+  // deep copy of data handles
   this->_chatLogic = source._chatLogic;
   this->_rootNode = source._rootNode;
   this->_currentNode = source._currentNode;
-  this->_image = source._image;
+  this->_image = new wxBitmap(*(source._image));
+  this->_chatLogic->SetChatbotHandle(this);
 }
 
 ChatBot::ChatBot(ChatBot&& source)  {
@@ -48,6 +48,7 @@ ChatBot::ChatBot(ChatBot&& source)  {
  this->_rootNode = source._rootNode;
  this->_currentNode = source._currentNode;
  this->_image = source._image;
+ this->_chatLogic->SetChatbotHandle(this);
 
   // releasing data handles
   source._chatLogic = nullptr;
@@ -74,11 +75,12 @@ ChatBot& ChatBot::operator=(ChatBot const& source) {
     return *this;
   }
 
-  // shallow copy of data handles
+  // deep copy of data handles
   this->_chatLogic = source._chatLogic;
   this->_rootNode = source._rootNode;
   this->_currentNode = source._currentNode;
-  this->_image = source._image;
+  this->_image = new wxBitmap(*(source._image));
+  this->_chatLogic->SetChatbotHandle(this);
 
   return *this;
 }
@@ -95,7 +97,7 @@ ChatBot& ChatBot::operator=(ChatBot&& source)  {
   this->_rootNode = source._rootNode;
   this->_currentNode = source._currentNode;
   this->_image = source._image;
-
+  this->_chatLogic->SetChatbotHandle(this);
   // releasing data handles
   source._chatLogic = nullptr;
   source._rootNode = nullptr;

@@ -38,8 +38,7 @@ class ChatLogic {
   // constructor / destructor
   ChatLogic();
   ~ChatLogic();
-  ChatLogic(ChatLogic && source) ;
-  ChatLogic& operator=(ChatLogic&& source);
+  
 
   // getter / setter
   void SetPanelDialogHandle(ChatBotPanelDialog *panelDialog);

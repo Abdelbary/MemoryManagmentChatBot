@@ -17,7 +17,6 @@ class ChatBot {
   GraphNode *_currentNode;
   GraphNode *_rootNode;
   ChatLogic *_chatLogic;
-
   // proprietary functions
   int ComputeLevenshteinDistance(std::string s1, std::string s2);
 
@@ -37,6 +36,8 @@ class ChatBot {
   void SetCurrentNode(GraphNode *node);
   void SetRootNode(GraphNode *rootNode) { _rootNode = rootNode; }
   void SetChatLogicHandle(ChatLogic *chatLogic) { _chatLogic = chatLogic; }
+  void SetChatbotHandle(ChatBot *chatbot);
+
   wxBitmap *GetImageHandle() { return _image; }
   ChatLogic* GetChatLogicHandle() { return _chatLogic; }
 
