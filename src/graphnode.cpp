@@ -7,9 +7,6 @@
 
 GraphNode::GraphNode(int id) { _id = id; }
 
-<<<<<<< HEAD
-GraphNode::~GraphNode(){}
-=======
 GraphNode::~GraphNode() {}
 
 GraphNode::GraphNode(GraphNode&& source)  {
@@ -22,7 +19,6 @@ GraphNode::GraphNode(GraphNode&& source)  {
   // release handles
   source._id = -1;
 }
->>>>>>> 5833f6ac86b85811d3caf8c35af1931ff7ba58cd
 
 GraphNode& GraphNode::operator=(GraphNode&& source)  {
   if (this == &source) {
@@ -42,30 +38,16 @@ GraphNode& GraphNode::operator=(GraphNode&& source)  {
 }
 
 
-<<<<<<< HEAD
-void GraphNode::MoveChatbotHere(ChatBot *chatbot)
-{
-    _chatBot = chatbot;
-    _chatBot->SetCurrentNode(this);
-=======
 
 void GraphNode::AddToken(const std::string& token) { _answers.push_back(token); }
 
 void GraphNode::AddEdgeToParentNode(GraphEdge* edge) {
   this->_parentEdges.push_back(edge);
->>>>>>> 5833f6ac86b85811d3caf8c35af1931ff7ba58cd
 }
 
 void GraphNode::AddEdgeToChildNode(std::unique_ptr<GraphEdge> edge) {
   this->_childEdges.push_back(std::move(edge));
 }
-<<<<<<< HEAD
-
-
-GraphEdge *GraphNode::GetChildEdgeAtIndex(int index)
-{
-    return _childEdges[index];
-=======
 
 void GraphNode::MoveChatbotHere(ChatBot &&chatbot) {
   this->_chatBot = std::move(chatbot);
@@ -79,5 +61,4 @@ void GraphNode::MoveChatbotToNewNode(GraphNode *newNode) {
 
 GraphEdge *GraphNode::GetChildEdgeAtIndex(int index) {
   return _childEdges[index].get();
->>>>>>> 5833f6ac86b85811d3caf8c35af1931ff7ba58cd
 }
